@@ -1,0 +1,3 @@
+ExerciseID,Date,Duration,Type,CaloriBurned,UserID
+1,2025-01-31,00:30:00,Running,300.0,1
+2,2025-01-31,00:45:00,Cycling,400.0,1

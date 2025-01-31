@@ -1,0 +1,3 @@
+MealID,Date,TotalCarbs,TotalFat,TotalProtein,TotalCalorie,Time,UserID
+1,2025-01-31,50.0,20.0,30.0,400.0,12:00:00,1
+2,2025-01-31,60.0,25.0,35.0,500.0,19:00:00,1
