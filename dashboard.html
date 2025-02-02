@@ -7,47 +7,141 @@
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to Calorie Tracker</h1>
-        <nav>
-            <ul>
-                <li><a href="#add-meal">Add Meal</a></li>
-                <li><a href="#add-exercise">Add Exercise</a></li>
-                <li><a href="#recipes">Recipes</a></li>
+    <div class="dashboard-container">
+        <!-- Left Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>Calorie Tracker</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#dashboard" class="active"><span>Dashboard</span></a></li>
+                <li><a href="#add-meal"><span>Add Meal</span></a></li>
+                <li><a href="#add-exercise"><span>Add Exercise</span></a></li>
+                <li><a href="#recipes"><span>Recipes</span></a></li>
+                <li><a href="#" id="logout"><span>Logout</span></a></li>
             </ul>
         </nav>
-    </header>
-    <main>
-        <section id="dashboard">
-            <h2>Dashboard</h2>
-            <div id="user-info"></div>
-            <div id="summary">
-                <h3>Daily Summary</h3>
-                <p>Total Calories: <span id="total-calories">0</span></p>
-                <p>Calories Burned: <span id="calories-burned">0</span></p>
-            </div>
-        </section>
-        <section id="add-meal">
-            <h2>Add Meal</h2>
-            <form id="meal-form">
-                <input type="text" id="meal-name" placeholder="Meal Name" required>
-                <input type="number" id="meal-calories" placeholder="Calories" required>
-                <button type="submit">Add Meal</button>
-            </form>
-        </section>
-        <section id="add-exercise">
-            <h2>Add Exercise</h2>
-            <form id="exercise-form">
-                <input type="text" id="exercise-type" placeholder="Exercise Type" required>
-                <input type="number" id="exercise-duration" placeholder="Duration (mins)" required>
-                <button type="submit">Add Exercise</button>
-            </form>
-        </section>
-        <section id="recipes">
-            <h2>Recipes</h2>
-            <ul id="recipe-list"></ul>
-        </section>
-    </main>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="dashboard-header">
+                <h1>Welcome to Calorie Tracker</h1>
+            </header>
+
+            <main>
+                <section id="dashboard">
+                    <h2>Dashboard</h2>
+                    <div id="user-info"></div>
+                    <div id="nutrition-summary">
+                        <h3>Daily Nutrition Summary</h3>
+                        <table id="nutrition-table">
+                            <thead>
+                                <tr>
+                                    <th>Nutrient</th>
+                                    <th>Total Consumed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Calories</td>
+                                    <td id="calories-total">0</td>
+                                </tr>
+                                <tr>
+                                    <td>Carbs (g)</td>
+                                    <td id="carbs-total">0</td>
+                                </tr>
+                                <tr>
+                                    <td>Protein (g)</td>
+                                    <td id="protein-total">0</td>
+                                </tr>
+                                <tr>
+                                    <td>Fat (g)</td>
+                                    <td id="fat-total">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="add-meal">
+                    <h2>Add Meal</h2>
+                    <form id="meal-form">
+                        <div class="form-group">
+                            <input type="text" id="meal-name" placeholder="Meal Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="meal-quantity" placeholder="Quantity (g)" required>
+                        </div>
+                        <div class="form-group">
+                            <select id="meal-type" required>
+                                <option value="">Select Meal Type</option>
+                                <option value="breakfast">Breakfast</option>
+                                <option value="lunch">Lunch</option>
+                                <option value="dinner">Dinner</option>
+                                <option value="snack">Snack</option>
+                            </select>
+                        </div>
+                        <button type="submit">Add Meal</button>
+                    </form>
+                    <div id="meals-list">
+                        <h3>Today's Meals</h3>
+                        <table id="meals-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Meal</th>
+                                    <th>Quantity</th>
+                                    <th>Calories</th>
+                                    <th>Carbs</th>
+                                    <th>Protein</th>
+                                    <th>Fat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="meals-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="add-exercise">
+                    <h2>Add Exercise</h2>
+                    <form id="exercise-form">
+                        <div class="form-group">
+                            <input type="text" id="exercise-type" placeholder="Exercise Type" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="exercise-duration" placeholder="Duration (mins)" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="exercise-intensity" placeholder="Intensity (1-10)" min="1" max="10" required>
+                        </div>
+                        <button type="submit">Add Exercise</button>
+                    </form>
+                    <div id="exercise-list">
+                        <h3>Today's Exercises</h3>
+                        <table id="exercise-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Exercise</th>
+                                    <th>Duration</th>
+                                    <th>Intensity</th>
+                                    <th>Calories Burned</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exercise-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="recipes">
+                    <h2>Recipes</h2>
+                    <ul id="recipe-list"></ul>
+                </section>
+            </main>
+        </div>
+    </div>
     <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>
