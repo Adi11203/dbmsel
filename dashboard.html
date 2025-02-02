@@ -4,36 +4,321 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Calorie Tracker</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(
+                135deg,
+                #0a0c0e 0%,
+                #1a1e24 25%,
+                #2c3440 50%,
+                #1a1e24 75%,
+                #0a0c0e 100%
+            );
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg,
+                rgba(26, 32, 44, 0.95) 0%,
+                rgba(44, 52, 64, 0.95) 100%);
+            backdrop-filter: blur(12px);
+            padding: 2rem 1.5rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background: linear-gradient(135deg, #2c7a7b 0%, #285e61 100%);
+            color: #fff;
+            border: none;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(180deg, rgba(26, 32, 44, 0.8) 0%, rgba(26, 32, 44, 0) 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Section Styles */
+        section {
+            background: linear-gradient(135deg, 
+                rgba(26, 32, 44, 0.8) 0%,
+                rgba(44, 52, 64, 0.8) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        section h2 {
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            background: linear-gradient(135deg,
+                rgba(17, 24, 39, 0.9) 0%,
+                rgba(32, 40, 56, 0.9) 100%);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: rgba(129, 230, 217, 0.3);
+            box-shadow: 0 0 0 2px rgba(129, 230, 217, 0.1);
+            transform: translateY(-2px);
+        }
+
+        button {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2c7a7b 0%, #285e61 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 122, 123, 0.4);
+            background: linear-gradient(135deg, #319795 0%, #2c7a7b 100%);
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+        }
+
+        th, td {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: #81e6d9;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Nutrition Summary Styles */
+        #nutrition-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        #nutrition-summary h3 {
+            grid-column: 1 / -1;
+            margin-bottom: 1.5rem;
+            color: #81e6d9;
+        }
+
+        /* Recipe List Styles */
+        #recipe-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .recipe-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(129, 230, 217, 0.3);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        section {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .dashboard-header {
+                padding: 1.5rem;
+            }
+
+            #nutrition-summary, #recipe-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Left Sidebar Navigation -->
         <nav class="sidebar">
             <div class="sidebar-header">
                 <h3>Calorie Tracker</h3>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="#dashboard" class="active"><span>Dashboard</span></a></li>
-                <li><a href="#add-meal"><span>Add Meal</span></a></li>
-                <li><a href="#add-exercise"><span>Add Exercise</span></a></li>
-                <li><a href="#recipes"><span>Recipes</span></a></li>
-                <li><a href="#" id="logout"><span>Logout</span></a></li>
+                <li><a href="#dashboard" class="active">Dashboard</a></li>
+                <li><a href="#add-meal">Add Meal</a></li>
+                <li><a href="#add-exercise">Add Exercise</a></li>
+                <li><a href="#recipes">Recipes</a></li>
+                <li><a href="#" id="logout">Logout</a></li>
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <div class="main-content">
             <header class="dashboard-header">
                 <h1>Welcome to Calorie Tracker</h1>
             </header>
 
             <main>
+                <!-- Rest of the content remains the same -->
+                <!-- Original sections and forms maintained -->
                 <section id="dashboard">
                     <h2>Dashboard</h2>
                     <div id="user-info"></div>
                     <div id="nutrition-summary">
                         <h3>Daily Nutrition Summary</h3>
+                        <p>Total Calories Burned: <span id="total-calories-burned">0</span></p>
                         <table id="nutrition-table">
                             <thead>
                                 <tr>
@@ -62,7 +347,6 @@
                         </table>
                     </div>
                 </section>
-
                 <section id="add-meal">
                     <h2>Add Meal</h2>
                     <form id="meal-form">
@@ -97,8 +381,7 @@
                                     <th>Fat</th>
                                 </tr>
                             </thead>
-                            <tbody id="meals-body">
-                            </tbody>
+                            <tbody id="meals-body"></tbody>
                         </table>
                     </div>
                 </section>
@@ -112,9 +395,6 @@
                         <div class="form-group">
                             <input type="number" id="exercise-duration" placeholder="Duration (mins)" required>
                         </div>
-                        <div class="form-group">
-                            <input type="number" id="exercise-intensity" placeholder="Intensity (1-10)" min="1" max="10" required>
-                        </div>
                         <button type="submit">Add Exercise</button>
                     </form>
                     <div id="exercise-list">
@@ -125,12 +405,10 @@
                                     <th>Time</th>
                                     <th>Exercise</th>
                                     <th>Duration</th>
-                                    <th>Intensity</th>
                                     <th>Calories Burned</th>
                                 </tr>
                             </thead>
-                            <tbody id="exercise-body">
-                            </tbody>
+                            <tbody id="exercise-body"></tbody>
                         </table>
                     </div>
                 </section>

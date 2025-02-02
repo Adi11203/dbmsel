@@ -4,58 +4,240 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Calorie Tracking System</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(
+                135deg,
+                #0a0c0e 0%,
+                #1a1e24 25%,
+                #2c3440 50%,
+                #1a1e24 75%,
+                #0a0c0e 100%
+            );
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            animation: fadeInUp 1s ease-out;
+            background: linear-gradient(180deg, rgba(26, 32, 44, 0.8) 0%, rgba(26, 32, 44, 0) 100%);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .signup-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, 
+                rgba(26, 32, 44, 0.8) 0%,
+                rgba(44, 52, 64, 0.8) 100%);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .signup-container:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg,
+                rgba(17, 24, 39, 0.9) 0%,
+                rgba(32, 40, 56, 0.9) 100%);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            background: rgba(44, 52, 64, 0.9);
+            border-color: rgba(129, 230, 217, 0.3);
+            box-shadow: 0 0 0 2px rgba(129, 230, 217, 0.1);
+            transform: translateY(-2px);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2c7a7b 0%, #285e61 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 122, 123, 0.4);
+            background: linear-gradient(135deg, #319795 0%, #2c7a7b 100%);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        a {
+            color: #81e6d9;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #4fd1c5;
+        }
+
+        #signup-error {
+            text-align: center;
+            margin-top: 1rem;
+            color: #fc8181;
+            background: rgba(252, 129, 129, 0.1);
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(252, 129, 129, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .signup-container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Calorie Tracking System</h1>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Calorie Tracking System</h1>
+        </header>
 
-    <main>
-        <div class="container">
-            <div class="login-container">
-                <div class="login-header">
-                    <h2>Create Account</h2>
+        <div class="signup-container">
+            <h2>Create Account</h2>
+            <form id="signup-form">
+                <div class="form-group">
+                    <input type="text" id="signup-name" placeholder="Full Name" required>
                 </div>
-                <form id="signup-form">
-                    <div class="form-group">
-                        <input type="text" id="signup-name" placeholder="Full Name" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" id="signup-age" placeholder="Age" required>
-                    </div>
-                    <div class="form-group">
-                        <select id="signup-gender" required>
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" id="signup-weight" step="0.1" placeholder="Weight (kg)" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" id="signup-height" step="0.1" placeholder="Height (cm)" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="signup-email" placeholder="Email" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="signup-password" placeholder="Password" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required>
-                    </div>
-                    <button type="submit" class="login-button">Create Account</button>
-                </form>
-                <p id="signup-error" style="color: red; display: none;">Error creating account. Please try again.</p>
-                <p class="signup-link">Already have an account? <a href="index.html">Login here</a></p>
-            </div>
+                <div class="form-group">
+                    <input type="number" id="signup-age" placeholder="Age" required>
+                </div>
+                <div class="form-group">
+                    <select id="signup-gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="signup-weight" step="0.1" placeholder="Weight (kg)" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="signup-height" step="0.1" placeholder="Height (cm)" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="signup-email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit">Create Account</button>
+            </form>
+            <p id="signup-error" style="display: none;">Error creating account. Please try again.</p>
+            <p class="signup-link">Already have an account? <a href="index.html">Login here</a></p>
         </div>
-    </main>
+    </div>
 
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script type="module" src="./js/signup.js"></script>
 </body>
 </html>

@@ -3,25 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Calorie Tracker</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <title>Login - Calorie Tracker Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(
+                135deg,
+                #1a1c20 0%,
+                #2d3436 25%,
+                #2c3e50 50%,
+                #2d3436 75%,
+                #1a1c20 100%
+            );
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00b894;
+        }
+
+        .header-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 3rem 2rem;
+            animation: fadeInUp 1s ease-out 0.4s forwards;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            color: #00b894;
+            margin-bottom: 1rem;
+        }
+
+        .testimonials {
+            margin: 3rem 2rem;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-login button {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .error-message {
+            color: #ff7675;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .signup-link {
+            color: #00b894;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link:hover {
+            color: #00cec9;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            animation: fadeInUp 1s ease-out 0.8s forwards;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .features, .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Calorie Tracking System</h1>
-    </header>
-    <main>
-        <section id="login"><center>
-            <h2>Login</h2></center>
-            <form id="login-form">
-                <input type="email" id="login-email" placeholder="Email" required>
-                <input type="password" id="login-password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-            <p id="login-error" style="color: red; display: none;">Invalid credentials. Please try again.</p>
-            <p style="text-align: center;">Don't have an account? <a href="signup.html">Sign up here</a></p>
+    <div class="container">
+        <header>
+            <h1>Calorie Tracking System</h1>
+            <p class="header-subtitle">Your journey to a healthier lifestyle starts here</p>
+        </header>
+
+        <div class="main-content">
+            <div class="glass-card">
+                <h2>Welcome Back</h2>
+                <form id="login-form">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <p class="error-message" id="login-error">Invalid credentials. Please try again.</p>
+                    <button type="submit">Login</button>
+                   
+                    <p>Don't have an account? <a href="signup.html" class="signup-link">Sign up here</a></p>
+                </form>
+            </div>
+
+            <div class="glass-card">
+                <h2>Why Choose Us?</h2>
+                <ul style="list-style: none; margin-left: 0;">
+                    <li style="margin-bottom: 1rem">✨ Intuitive and easy-to-use interface</li>
+                    <li style="margin-bottom: 1rem">📊 Detailed nutrition analytics</li>
+                    <li style="margin-bottom: 1rem">🎯 Personalized goal setting</li>
+                    <li style="margin-bottom: 1rem">📱 Mobile app integration</li>
+                    <li style="margin-bottom: 1rem">🤝 Community support</li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Track Everything</h3>
+                <p>Log your meals, exercises, and track your progress with our comprehensive dashboard.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Smart Analytics</h3>
+                <p>Get detailed insights about your nutrition habits and progress towards your goals.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Community Support</h3>
+                <p>Connect with like-minded individuals and share your fitness journey.</p>
+            </div>
         </section>
-    </main>
+
+        <section class="testimonials">
+            <h2>What Our Users Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p>"This app has completely transformed my approach to healthy eating. The tracking is so intuitive!"</p>
+                    <p style="color: #00b894; margin-top: 1rem">- Sarah J.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p>"The best calorie tracking app I've ever used. The analytics really help me stay on track."</p>
+                    <p style="color: #00b894; margin-top: 1rem">- Mike R.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Love the community features! It's great to connect with others on the same journey."</p>
+                    <p style="color: #00b894; margin-top: 1rem">- Emily T.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with ❤️ by Calorie Tracking System Team</p>
+        </footer>
+    </div>
+
     <script type="module" src="./js/login.js"></script>
 </body>
 </html>
