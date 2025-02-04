@@ -347,44 +347,18 @@
                         </table>
                     </div>
                 </section>
-                <section id="add-meal">
-                    <h2>Add Meal</h2>
-                    <form id="meal-form">
-                        <div class="form-group">
-                            <input type="text" id="meal-name" placeholder="Meal Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="number" id="meal-quantity" placeholder="Quantity (g)" required>
-                        </div>
-                        <div class="form-group">
-                            <select id="meal-type" required>
-                                <option value="">Select Meal Type</option>
-                                <option value="breakfast">Breakfast</option>
-                                <option value="lunch">Lunch</option>
-                                <option value="dinner">Dinner</option>
-                                <option value="snack">Snack</option>
-                            </select>
-                        </div>
-                        <button type="submit">Add Meal</button>
-                    </form>
-                    <div id="meals-list">
-                        <h3>Today's Meals</h3>
-                        <table id="meals-table">
-                            <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Meal</th>
-                                    <th>Quantity</th>
-                                    <th>Calories</th>
-                                    <th>Carbs</th>
-                                    <th>Protein</th>
-                                    <th>Fat</th>
-                                </tr>
-                            </thead>
-                            <tbody id="meals-body"></tbody>
-                        </table>
-                    </div>
-                </section>
+               <section id="add-meal">
+    <h2>Add Meal</h2>
+    <form id="meal-form">
+        <div class="form-group">
+            <select id="meal-type">
+                <option value="chicken-breast">Chicken Breast</option>
+                <option value="brown-rice">Brown Rice</option>
+            </select>
+        </div>
+        <button type="submit">Add Meal</button>
+    </form>
+</section>
 
                 <section id="add-exercise">
                     <h2>Add Exercise</h2>
@@ -397,22 +371,11 @@
                         </div>
                         <button type="submit">Add Exercise</button>
                     </form>
-                    <div id="exercise-list">
-                        <h3>Today's Exercises</h3>
-                        <table id="exercise-table">
-                            <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Exercise</th>
-                                    <th>Duration</th>
-                                    <th>Calories Burned</th>
-                                </tr>
-                            </thead>
-                            <tbody id="exercise-body"></tbody>
-                        </table>
-                    </div>
+                
+                    <h3>Today's Exercises</h3>
+                    <div id="exercise-list"></div> <!-- List will appear here -->
                 </section>
-
+                
                 <section id="recipes">
                     <h2>Recipes</h2>
                     <ul id="recipe-list"></ul>
@@ -421,5 +384,6 @@
         </div>
     </div>
     <script type="module" src="./js/dashboard.js"></script>
+    
 </body>
 </html>

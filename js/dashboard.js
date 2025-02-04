@@ -1,184 +1,132 @@
 import { supabase } from './supabaseConfig.js';
 
-const userInfo = document.getElementById('user-info');
 const exerciseForm = document.getElementById('exercise-form');
-const mealForm = document.getElementById('meal-form');
+const exerciseList = document.getElementById('exercise-list');
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-    if (authData) {
-        const { data: userInfoData, error: userError } = await supabase
-            .from('USER')
-            .select(`
-                Name,
-                Age,
-                Gender,
-                weight,
-                Height,
-                Email
-            `)
-            .eq('UserID', authData.user.id)
-            .single();
-
-        if (userInfoData) {
-            userInfo.innerText = `Welcome, ${userInfoData.Name}`;
-            updateExerciseCalories(authData.user.id);
-            updateMealNutrition(authData.user.id);
-        } else {
-            console.error('Error fetching user data:', userError);
-        }
+// Calculate calories based on exercise type and duration
+function calculateCaloriesBurned(type, duration) {
+    switch (type.toLowerCase()) {
+        case 'running':
+            return 200 * (duration / 60);
+        case 'cycling':
+            return 300 * (duration / 60);
+        default:
+            return 0;
     }
-});
+}
 
-// Exercise tracking
+// Function to display exercises
+async function displayExercises(userId) {
+    const { data: exercises, error } = await supabase
+        .from('NEW_EXE')
+        .select('*')
+        .eq('UserID', userId)
+       
+
+    if (error) {
+        console.error('Error fetching exercises:', error);
+        return;
+    }
+
+    exerciseList.innerHTML = `
+        <table class="w-full mt-4">
+            <thead>
+                <tr>
+                    <th class="text-left">Exercise</th>
+                    <th class="text-left">Duration (min)</th>
+                    <th class="text-left">Calories Burned</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${exercises.map(exercise => `
+                    <tr>
+                        <td>${exercise.Type}</td>
+                        <td>${exercise.Duration}</td>
+                        <td>${exercise.CaloriesBurned.toFixed(1)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+// Exercise form submission handler
 exerciseForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const exerciseType = document.getElementById('exercise-type').value;
     let exerciseDuration = document.getElementById('exercise-duration').value;
     exerciseDuration = parseInt(exerciseDuration, 10);
-    
+
     if (isNaN(exerciseDuration)) {
         alert('Please enter a valid duration.');
         return;
     }
 
-    const { data: authData } = await supabase.auth.getUser();
-    if (authData) {
-        const userId = authData.user.id;
-        
-        const { error: exerciseInsertError } = await supabase
-            .from('EXERCISE')
-            .insert([{
-                Type: exerciseType,
-                Duration: exerciseDuration,
-                Date: new Date().toISOString(),
-                CaloriBurned: calculateCaloriesBurned(exerciseType, exerciseDuration),
-                UserID: userId
-            }]);
+    // Calculate calories burned based on exercise type
+    const caloriesBurned = calculateCaloriesBurned(exerciseType, exerciseDuration);
 
-        if (exerciseInsertError) {
-            alert('Error adding exercise: ' + exerciseInsertError.message);
-        } else {
-            alert('Exercise added successfully');
-            exerciseForm.reset();
-            updateExerciseCalories(userId);
-        }
+    // Insert into NEW_EXE table
+    const { data: insertData, error: exerciseInsertError } = await supabase
+        .from('NEW_EXE')
+        .insert([{
+            Type: exerciseType,
+            Duration: exerciseDuration,
+            CaloriesBurned: caloriesBurned,
+            
+        }]);
+
+    if (exerciseInsertError) {
+        alert('Error adding exercise: ' + exerciseInsertError.message);
+    } else {
+        alert('Exercise added successfully');
+        exerciseForm.reset();
+        // Refresh the display
+        displayExercises();
     }
 });
 
-// Meal tracking
-mealForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
+
+// Initial display when page loads
+document.addEventListener('DOMContentLoaded', async () => {
     const { data: authData } = await supabase.auth.getUser();
-    if (!authData) return;
+    if (authData) {
+        displayExercises(authData.user.id);
+    }
+});
+async function updateDashboard() {
+    // Fetch exercises from NEW_EXE table
+    const { data: exercises, error } = await supabase
+        .from('NEW_EXE')
+        .select('CaloriesBurned');
 
-    const userId = authData.user.id;
-    const mealData = {
-        Time: new Date().toISOString(),
-        UserID: userId,
-        TotalCarbs: 0,
-        TotalFat: 0,
-        TotalProtein: 0,
-        TotalCalorie: 0
-    };
-
-    // First insert the meal
-    const { data: mealInsert, error: mealError } = await supabase
-        .from('MEAL')
-        .insert([mealData])
-        .select();
-
-    if (mealError) {
-        alert('Error creating meal');
+    if (error) {
+        console.error('Error fetching exercises:', error);
         return;
     }
 
-    // Then insert the food items
-    const foodItems = getFoodItemsFromForm(); // You'll need to implement this based on your UI
-    for (const item of foodItems) {
-        const { error: foodError } = await supabase
-            .from('FOODITEM')
-            .insert([{
-                ...item,
-                MealID: mealInsert[0].MealID
-            }]);
-        
-        if (foodError) {
-            console.error('Error adding food item:', foodError);
-        }
+    // Calculate the total calories burned from exercises
+    const totalCaloriesBurned = exercises.reduce((total, exercise) => total + exercise.CaloriesBurned, 0);
+
+    // Update the total calories burned on the dashboard
+    const totalCaloriesBurnedElement = document.getElementById('total-calories-burned');
+    totalCaloriesBurnedElement.textContent = totalCaloriesBurned.toFixed(1);
+
+    // Fetch the total consumed calories from the user's nutrition data
+    const { data: nutritionData, error: nutritionError } = await supabase
+        .from('USER_NUTRITION') // Adjust this table name according to your setup
+        .select('Calories')
+        .single();  // Assuming the user has a single entry for nutrition data
+
+    if (nutritionError) {
+        console.error('Error fetching nutrition data:', nutritionError);
+        return;
     }
 
-    updateMealNutrition(userId);
-});
-
-// Utility functions
-function calculateCaloriesBurned(type, duration) {
-    const caloriesPerHour = {
-        'running': 600,
-        'walking': 300,
-        'cycling': 400,
-        'swimming': 500
-    };
-    return (caloriesPerHour[type] || 300) * (duration / 60);
+    // Update the calories row in the table
+    const totalCaloriesConsumedElement = document.getElementById('calories-total');
+    totalCaloriesConsumedElement.textContent = nutritionData ? nutritionData.Calories : '0';
 }
 
-async function updateExerciseCalories(userId) {
-    const { data: exercises, error } = await supabase
-        .from('EXERCISE')
-        .select('CaloriBurned')
-        .eq('UserID', userId)
-        .gte('Date', new Date().toISOString().split('T')[0]);
-
-    if (!error) {
-        const totalCalories = exercises.reduce((sum, ex) => sum + ex.CaloriBurned, 0);
-        document.getElementById('total-calories-burned').textContent = totalCalories.toFixed(1);
-    }
-}
-
-async function updateMealNutrition(userId) {
-    const { data: meals, error } = await supabase
-        .from('MEAL')
-        .select(`
-            MealID,
-            TotalCarbs,
-            TotalFat,
-            TotalProtein,
-            TotalCalorie
-        `)
-        .eq('UserID', userId)
-        .gte('Time', new Date().toISOString().split('T')[0]);
-
-    if (!error) {
-        const totals = meals.reduce((acc, meal) => ({
-            calories: acc.calories + meal.TotalCalorie,
-            carbs: acc.carbs + meal.TotalCarbs,
-            protein: acc.protein + meal.TotalProtein,
-            fat: acc.fat + meal.TotalFat
-        }), { calories: 0, carbs: 0, protein: 0, fat: 0 });
-
-        document.getElementById('total-calories-consumed').textContent = totals.calories.toFixed(1);
-        document.getElementById('total-carbs').textContent = totals.carbs.toFixed(1);
-        document.getElementById('total-protein').textContent = totals.protein.toFixed(1);
-        document.getElementById('total-fat').textContent = totals.fat.toFixed(1);
-    }
-}
-
-async function getFoodItemDetails(foodId) {
-    const { data, error } = await supabase
-        .from('FOODITEM')
-        .select(`
-            Name,
-            Category,
-            Quantity,
-            Calorie,
-            Protein,
-            Fat,
-            Carbs
-        `)
-        .eq('FoodID', foodId)
-        .single();
-
-    return error ? null : data;
-}
+// Call the updateDashboard function when the page loads
+document.addEventListener('DOMContentLoaded', updateDashboard);
